@@ -167,8 +167,8 @@ escribir_numero:
     
     # Verificar si hay m�s n�meros para escribir la coma
     lw $t3, ($t1)            # cargar el siguiente n�mero
-    bnez $t3, escribir_coma     # si no es cero, escribir la coma
-    j escribir_bucle           # si es cero, terminar el bucle
+    bnez $t3, escribir_coma  # si no es cero, escribir la coma
+    j escribir_bucle         # si es cero, terminar el bucle
 
 escribir_coma:
     # Escribir el separador (coma y espacio)
@@ -178,7 +178,7 @@ escribir_coma:
     li $a2, 2                # longitud del separador
     syscall
     
-    j escribir_bucle           # volver al bucle de escritura
+    j escribir_bucle         # volver al bucle de escritura
     
 cerrar_archivo:
     li $v0, 16               # syscall para cerrar archivo
@@ -189,21 +189,21 @@ cerrar_archivo:
 
 #Calcular la longitud del arreglo
 longitudArreglo:
-	addi $sp, $sp, -8 		                 # Reservamos espacio en la pila
-	sw $ra, 0($sp)			                 # Guardamos en la pila la posición de retorno
-	sw $a0, 4($sp)			                 # Guardamos en la pila nuestro arreglo
-	addi $t1, $zero, 0 		                 # Definimos el contador
+	addi $sp, $sp, -8 		# Reservamos espacio en la pila
+	sw $ra, 0($sp)			# Guardamos en la pila la posición de retorno
+	sw $a0, 4($sp)			# Guardamos en la pila nuestro arreglo
+	addi $t1, $zero, 0 		# Definimos el contador
 whileElementoMayorCero:
-	lw  $t2,0($a0)			                 # Guardamos en $t2 cada valor del arreglo al recorrerlo
-        beq $t2,$zero,endElementoMayorCero		 # Si $t2 = 0, entonces termina while
-        addi $t1,$t1,1 			                 # Sumamos 1 al contador
-        addi $a0,$a0,4 		                     # aumentamos en 4 el valor del indice de nuestro arreglo
+	lw  $t2,0($a0)				# Guardamos en $t2 cada valor del arreglo al recorrerlo
+        beq $t2,$zero,endElementoMayorCero	# Si $t2 = 0, entonces termina while
+        addi $t1,$t1,1 			        # Sumamos 1 al contador
+        addi $a0,$a0,4 		                # aumentamos en 4 el valor del indice de nuestro arreglo
         j   whileElementoMayorCero
 endElementoMayorCero:    
-        add $v0, $zero,$t1						 # Guardamos en $v0 la longitud
-        lw  $ra,0($sp)							 # cargamos la posición de retorno
-        lw  $a0,4($sp)							 # Cargamos en $a0 el arreglo  guardado en la pila
-        addi $sp,$sp,8							 # liberamos la pila
+        add $v0, $zero,$t1		# Guardamos en $v0 la longitud
+        lw  $ra,0($sp)			# cargamos la posición de retorno
+        lw  $a0,4($sp)			# Cargamos en $a0 el arreglo  guardado en la pila
+        addi $sp,$sp,8			# liberamos la pila
         jr  $ra
 
 	# ---------- Fin función para escribir el arreglo en un archivo de texto ------- #
@@ -222,22 +222,22 @@ end_terminate_execution:
 # Función que dado un arreglo ingresado y una longitud, ordena el arreglo usando el algoritmo heapsort de manera descendente
 heapsort:
 	addi $a1, $v0, 0
-	addi $sp, $sp, -8			# Reservamos 2 espacios en la pila para guardar la dirección de retorno y el parámetro n
+	addi $sp, $sp, -8		# Reservamos 2 espacios en la pila para guardar la dirección de retorno y el parámetro n
 	sw $ra, 0($sp)			# Guardamos la dirección de retorno en la pila
 	sw $a1, 4($sp)			# Guardamos el $a1, que representa el tercer parámetro del heapify en la pila
 	jal create_minheap		# Llamamos a la función minheap para que ordene el arreglo
-	jal extract				# Llamamos a la función extract para que con el minheap creado anteriormente podamos ordenar el arreglo
+	jal extract			# Llamamos a la función extract para que con el minheap creado anteriormente podamos ordenar el arreglo
 end_heapsort:
 	lw $ra, 0($sp)			# Obtenemos la dirección de retorno anterior
 	lw $a1, 4($sp)			# Obtenemos el $a1 anterior
-	addi $sp, $sp, 8			# Liberamos los 2 espacios en la pila
+	addi $sp, $sp, 8		# Liberamos los 2 espacios en la pila
 	jr $ra				# Retornamos al proceso que llamó heapsort
 
 # Función que dado un arreglo ya ordenado como minheap, extrae cada elemento y lo pone en la posición correspondiente
 extract:
-	addi $sp, $sp, -4			# Reservamos un espacio en la pila para guardar la dirección de retorno
+	addi $sp, $sp, -4		# Reservamos un espacio en la pila para guardar la dirección de retorno
 	sw $ra, 0($sp)			# Guardamos la dirección de retorno en la pila
-	addi $s1, $a1, -1			# Obtenemos n - 1 y lo guardamos en $s1
+	addi $s1, $a1, -1		# Obtenemos n - 1 y lo guardamos en $s1
 	
 	ciclo_extract:
 		lw $s2, 0($a0) 		# Cargo el primer elemento del arreglo en $s2
@@ -248,7 +248,7 @@ extract:
 		sw $s4, 0($a0) 		# array[0] = array[i]
 		sw $s2, 0($s3)		# array[i] = array[0]
 		
-		addi $a1, $s1, 0		# $a1 = $s1 = i
+		addi $a1, $s1, 0	# $a1 = $s1 = i
 		addi $a2, $zero, 0	# Al tercer argumento del heapify le llevamos cero
 		
 		jal heapify			# Llamamos la función heapify con los nuevos argumentos
@@ -268,8 +268,8 @@ create_minheap:
 	addi $a2, $a2, -1
 	
 	ciclo:
-		la $a0, vector 	# -- $a0 = Dirección base del vector en memoria -- #
-		#lw $a1, len 	# -- $a1 = Longitud del arreglo
+		la $a0, vector 		# -- $a0 = Dirección base del vector en memoria -- #
+		#lw $a1, len 		# -- $a1 = Longitud del arreglo
 		jal heapify	 	
 		ble $a2, $zero, end_createminheap
 		addi $a2, $a2, -1
@@ -283,7 +283,7 @@ end_createminheap:
 heapify:
 	
 	
-	addi $sp, $sp, -8		# Se reserva un espacio para el otro i (recursivo)
+	addi $sp, $sp, -8	# Se reserva un espacio para el otro i (recursivo)
 	sw $ra, 0($sp)
 	sw $a2, 4($sp)
 	
@@ -293,22 +293,22 @@ heapify:
 	
 	add $t3, $t2, $zero 	# $t3 = min -- $t3 == i
 	
-	sll $t4, $t2, 1 		# $t4 = i*2
-	addi $t4, $t4, 1		# $t4 = i*2+1 ($t4 = índice izquierdo)
+	sll $t4, $t2, 1 	# $t4 = i*2
+	addi $t4, $t4, 1	# $t4 = i*2+1 ($t4 = índice izquierdo)
 	
 	sll $t5, $t2, 1		# $t5 = i*2
-	addi $t5, $t5, 2		# $t5 = i*2+1 ($t5 = índice derecho)
+	addi $t5, $t5, 2	# $t5 = i*2+1 ($t5 = índice derecho)
 	
 	# -- Parámetros necesarios para comparaciones -- #
 	sll $t6, $t3, 2		# Cálculo de número de bytes en el arreglo para alcanzar array[min]
-	add $s0, $t0, $t6		# t6 = dirección de array en la posición min
+	add $s0, $t0, $t6	# t6 = dirección de array en la posición min
 	lw $t6, 0($s0)		# t6 = arreglo[min]
 	
 	# -- Comparaciones -- #
 	
 	# -- Comparación izquierda -- #
 	sll $t7, $t4, 2		# $t7 = ind_izq * 4 Nro de bytes para alcanzar array[ind_izq]
-	add $t7, $t0, $t7		# $t7 = dirección de array[ind_izq]
+	add $t7, $t0, $t7	# $t7 = dirección de array[ind_izq]
 	lw $t7, 0($t7)		# $t7 = array[ind_izq]
 	
 	comp_izq:		
@@ -319,12 +319,12 @@ heapify:
 	end_compizq:
 	
 	sll $t6, $t3, 2		# Cálculo de número de bytes en el arreglo para alcanzar array[min]
-	add $s0, $t0, $t6		# t6 = dirección de array en la posición min
+	add $s0, $t0, $t6	# t6 = dirección de array en la posición min
 	lw $t6, 0($s0)		# t6 = arreglo[min]
 	
 	# -- Comparación Derecha -- #
 	sll $t7, $t5, 2		# $t7 = ind_der * 4 Nro de bytes para alcanzar array[ind_der]
-	add $t7, $t0, $t7		# $t7 = dirección de array[ind_der]
+	add $t7, $t0, $t7	# $t7 = dirección de array[ind_der]
 	lw $t7, 0($t7)		# $t7 = array[ind_der]
 	
 	comp_der:
@@ -337,22 +337,22 @@ heapify:
 	# Intercambio de valores en el arreglo
 	beq $t3, $t2, end_heapify	# Salta si min = i
 	sll $t8, $t2, 2			# $t8 = i * 4
-	add $t8, $t8, $t0			# $t8 = dirección arr[i]
+	add $t8, $t8, $t0		# $t8 = dirección arr[i]
 	lw $t9, 0($t8)			# $t9 = arr[i]
 	
 	sll $t6, $t3, 2			# Cálculo de número de bytes en el arreglo para alcanzar array[min]
-	add $s0, $t0, $t6			# s0 = dirección de array en la posición min
+	add $s0, $t0, $t6		# s0 = dirección de array en la posición min
 	lw $t6, 0($s0)			# t6 = arreglo[min]
 	
 	sw $t6, 0($t8)			# arr[i] = arr[min]
 	sw $t9, 0($s0)			# arr[min] = arr[i]
 	
-	addi $a2, $t3, 0			# Cambiamos el parámetro para el siguiente heapify $a2 = min
-	jal heapify				# Llamado a heapify con parámetros arr, n, min
+	addi $a2, $t3, 0		# Cambiamos el parámetro para el siguiente heapify $a2 = min
+	jal heapify			# Llamado a heapify con parámetros arr, n, min
 	
 	lw $a2, 4($sp)			# Obtenemos nuevamente el valor de $a2 luego de cambiarlo para el anterior heapify
 	
 end_heapify:
 	lw $ra, 0($sp)			# Obtenemos nuevamente la dirección de retorno
-	addi $sp, $sp, 8			# Liberamos los 2 espacios en la pila obtenidos anteriormente
+	addi $sp, $sp, 8		# Liberamos los 2 espacios en la pila obtenidos anteriormente
 	jr $ra				# Retornamos al proceso que llamó la función heapify
